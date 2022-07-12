@@ -12,7 +12,7 @@ import sys
 sys.path.append('..')
 from ForSol.Time_Marching import Newton
 import Model
-import AdSol
+from AdSol.Adjoint_Solver import Adjoint
 
 # initialization constants
 m = 2.5
@@ -37,4 +37,4 @@ plt.ylabel('position (m)')
 plt.grid(True)
 plt.show()
 
-smd_adj = AdSol.Adjoint_Solver.Adjoint(smd_model,experiment.time,experiment.x_hist,experiment.xDot_hist)
+smd_adj = Adjoint(smd_model,experiment.time,experiment.x_hist,experiment.xDot_hist)

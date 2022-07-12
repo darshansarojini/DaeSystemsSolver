@@ -32,8 +32,8 @@ class Adjoint:
             x = self.x_hist[:,t]
             xDot = self.xDot_hist[:,t]
             F = (1/2)*time_step*k*x[0]
-            dFdx = J_dFdx(x,xDot)
-            dFdxDot = J_dFdxDot(x,xDot)
+            dFdx = J_dFdx(x,xDot).T
+            dFdxDot = J_dFdxDot(x,xDot).T
             dRdx = J_dRdx(x,xDot)
             dRdxDot = J_dRdxDot(x,xDot)
             
@@ -67,7 +67,7 @@ class Adjoint:
                 
             adj = solve(A,b)
             
-            for row in range(len(adj)):
+            for row in range(len(x_hist[:,0])):
                 self.adj_hist[row,t] = adj[row]
                 self.dRdxDot_hist[row,t] = dRdxDot[row]
                 self.dFdxDot_hist[row,t] = dFdxDot[row]
