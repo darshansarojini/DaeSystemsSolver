@@ -26,7 +26,7 @@ time_step = 10**(-3)
 tolerance = 10**(-8)
 
 # experiment
-smd_model = Model.SMD_Model.SpringMassDamper(c,m,k,x0,xDot0)
+smd_model = Model.SMD_Model.SpringMassDamper(c,m,k,x0,xDot0,time_step)
 experiment = Newton(smd_model,t_initial,t_final,time_step,tolerance) 
 
 # plot the result
@@ -38,3 +38,8 @@ plt.grid(True)
 plt.show()
 
 smd_adj = Adjoint(smd_model,experiment.time,experiment.x_hist,experiment.xDot_hist)
+plt.plot(experiment.time,smd_adj.adj_hist[0,:])
+plt.show()
+
+plt.plot(experiment.time,smd_adj.adj_hist[1,:])
+plt.show()
