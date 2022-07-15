@@ -27,6 +27,6 @@ class SpringMassDamper:
         self.J_dRdx = Function('dRdx',[self.x,self.xDot],[dRdx])
         self.J_dRdxDot = Function('dRdxDot',[self.x,self.xDot],[dRdxDot])
         
-        self.F = (1/2)*time_step*k*x[0]
-        self.J_dFdx = Function('dFdx',[x,xDot],[jacobian(self.F,self.x)])
-        self.J_dFdxDot = Function('dFdx',[x,xDot],[jacobian(self.F,self.xDot)])
+        self.F = (1/2)*self.time_step*self.k*self.x[0]**2
+        self.J_dFdx = Function('dFdx',[self.x,self.xDot],[jacobian(self.F,self.x)])
+        self.J_dFdxDot = Function('dFdx',[self.x,self.xDot],[jacobian(self.F,self.xDot)])

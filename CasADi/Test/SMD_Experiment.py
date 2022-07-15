@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import sys
 sys.path.append('..')
 from ForSol.Time_Marching import Newton
-import Model
+from Model.SMD_Model import SpringMassDamper
 from AdSol.Adjoint_Solver import Adjoint
 
 # initialization constants
@@ -26,7 +26,7 @@ time_step = 10**(-3)
 tolerance = 10**(-8)
 
 # experiment
-smd_model = Model.SMD_Model.SpringMassDamper(c,m,k,x0,xDot0,time_step)
+smd_model = SpringMassDamper(c,m,k,x0,xDot0,time_step)
 experiment = Newton(smd_model,t_initial,t_final,time_step,tolerance) 
 
 # plot the result
