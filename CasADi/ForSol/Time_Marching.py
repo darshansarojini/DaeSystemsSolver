@@ -19,6 +19,7 @@ class Newton:
         
         x = model.x
         xDot = model.xDot
+        mu = model.mu
         
         J_dRdx = model.J_dRdx
         J_dRdxDot = model.J_dRdxDot
@@ -39,11 +40,11 @@ class Newton:
                     k1 = -2/time_step
                     k2 = 0.5/time_step
                     xDot = k0*x+k1*self.x_hist[:,t]+k2*self.x_hist[:,t-1]             
-                r = Residuals(x,xDot)
+                r = Residuals(x,xDot,mu)
                 if norm_1(r) < self.tolerance:
                     break
-                drdx = J_dRdx(x,xDot)
-                drdxDot = J_dRdxDot(x,xDot)
+                drdx = J_dRdx(x,xDot,mu)
+                drdxDot = J_dRdxDot(x,xDot,mu)
                 delta_x = solve(drdx+k0*drdxDot,-r)
                 x = x + delta_x
                 steps += 1

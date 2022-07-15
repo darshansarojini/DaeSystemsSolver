@@ -29,17 +29,22 @@ tolerance = 10**(-8)
 smd_model = SpringMassDamper(c,m,k,x0,xDot0,time_step)
 experiment = Newton(smd_model,t_initial,t_final,time_step,tolerance) 
 
-# plot the result
-plt.plot(experiment.time,experiment.x_hist[0,:])
-plt.title('Mass Movement')
-plt.xlabel('time (s)')
-plt.ylabel('position (m)')
-plt.grid(True)
-plt.show()
+# # plot the result
+# plt.plot(experiment.time,experiment.x_hist[0,:])
+# plt.title('Mass Movement')
+# plt.xlabel('time (s)')
+# plt.ylabel('position (m)')
+# plt.grid(True)
+# plt.show()
 
 smd_adj = Adjoint(smd_model,experiment.time,experiment.x_hist,experiment.xDot_hist)
-plt.plot(experiment.time,smd_adj.adj_hist[0,:])
-plt.show()
+# plt.plot(experiment.time,smd_adj.adj_hist[0,:])
+# plt.show()
 
-plt.plot(experiment.time,smd_adj.adj_hist[1,:])
-plt.show()
+# plt.plot(experiment.time,smd_adj.adj_hist[1,:])
+# plt.show()
+
+dfdk = smd_adj.final_dfdk(smd_model)
+fd_adjoint = 1.160820
+print(dfdk)
+print(100*(dfdk-fd_adjoint)/dfdk)
