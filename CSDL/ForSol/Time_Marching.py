@@ -32,13 +32,14 @@ class Newton:
                     k0 = 1/self.time_step
                     k1 = -k0
                     sim['xDot'] = k0*sim['x']+k1*self.x_hist[:,t]
+                    sim.run()
                 else:
                     k0 = 1.5/self.time_step
                     k1 = -2/self.time_step
                     k2 = 0.5/self.time_step
                     sim['xDot'] = k0*sim['x']+k1*self.x_hist[:,t]+k2*self.x_hist[:,t-1]
+                    sim.run()
                     
-                print(sim['R'])
                 if np.linalg.norm(sim['R']) < self.tolerance:
                     break
                 
@@ -47,6 +48,7 @@ class Newton:
                 dRdxDot = jacobians_R['R','xDot']
                 delta_x = np.linalg.solve(dRdx+k0*dRdxDot,-sim['R'])
                 sim['x'] = sim['x'] + delta_x
+                sim.run()
 
                 steps += 1
         
