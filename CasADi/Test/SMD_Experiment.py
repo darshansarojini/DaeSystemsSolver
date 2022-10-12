@@ -27,7 +27,14 @@ tolerance = 10**(-8)
 
 # experiment
 smd_model = SpringMassDamper(c,m,k,x0,xDot0,time_step)
+
+import timeit
+start = timeit.default_timer()
+
 experiment = Newton(smd_model,t_initial,t_final,time_step,tolerance) 
+
+stop = timeit.default_timer()
+print('Time: ', stop - start) 
 
 # # plot the result
 plt.plot(experiment.time,experiment.x_hist[0,:])
