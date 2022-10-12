@@ -7,7 +7,7 @@ Created on Wed Sep 21 11:39:27 2022
 
 import sys
 sys.path.append('..')
-from Model.SMD_Model_CSDL import SMD_R
+from Model.SMD_Model_CSDL import SMD_R,SMD_F
 from ForSol.Time_Marching_CSDL import Newton
 from AdSol.Adjoint_Solver_CSDL import Adjoint
 
@@ -15,6 +15,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 sim_R = SMD_R()
+sim_F = SMD_F()
 x0 = np.array([[1,0]])
 xDot0 = np.array([[0,0]])
 t_initial = 0
@@ -37,14 +38,14 @@ plt.ylabel('position (m)')
 plt.grid(True)
 plt.show()
 
-# smd_adj = Adjoint(smd_model,experiment.time,experiment.x_hist,experiment.xDot_hist)
-# plt.plot(experiment.time,smd_adj.adj_hist[0,:])
-# plt.show()
+smd_adj = Adjoint(sim_R,sim_F,experiment.time,experiment.x_hist,experiment.xDot_hist)
+plt.plot(experiment.time,smd_adj.adj_hist[:,0])
+plt.show()
 
-# plt.plot(experiment.time,smd_adj.adj_hist[1,:])
-# plt.show()
+plt.plot(experiment.time,smd_adj.adj_hist[:,1])
+plt.show()
 
-# dfdk = smd_adj.final_dfdk(smd_model)
-# fd_adjoint = 1.160820
-# print(dfdk)
-# print(100*(dfdk-fd_adjoint)/dfdk)
+dfdk = smd_adj.final_dfdk()
+fd_adjoint = 1.160820
+print(dfdk)
+print(100*(dfdk-fd_adjoint)/dfdk)
