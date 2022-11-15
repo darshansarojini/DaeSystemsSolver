@@ -70,7 +70,27 @@ class Adjoint:
                 # print(type(dFdxDot))
                 self.dFdxDot_hist[t,col] = dFdxDot[0,col]
 
-    def final_dfdk(self):
+    # def final_dfdk(self):
+    #     dfdk = 0
+    #     for t in range(len(self.time)-1):
+    #         self.sim_R['x'] = self.x_hist[t,:]
+    #         self.sim_R['xDot'] = self.xDot_hist[t,:]
+    #         self.sim_R.run()
+    #         self.sim_F['x'] = self.x_hist[t,:]
+    #         self.sim_F['xDot'] = self.xDot_hist[t,:]
+    #         self.sim_F.run()
+
+    #         adj = self.adj_hist[t,:]
+    #         jacobians_R = self.sim_R.executable.compute_totals('R',['c','m','k']) 
+    #         dRdk = jacobians_R['R','k']
+            
+    #         jacobians_F = self.sim_F.executable.compute_totals('F',['c','m','k']) 
+    #         dFdk = jacobians_F['F','k']
+    #         dfdk = dfdk + dFdk + np.dot(adj,dRdk)
+    #     return dfdk
+    
+    # nu should be in the form of list
+    def final_grad(self,nu):
         dfdk = 0
         for t in range(len(self.time)-1):
             self.sim_R['x'] = self.x_hist[t,:]
@@ -81,10 +101,12 @@ class Adjoint:
             self.sim_F.run()
 
             adj = self.adj_hist[t,:]
-            jacobians_R = self.sim_R.executable.compute_totals('R',['c','m','k']) 
-            dRdk = jacobians_R['R','k']
+            jacobians_R = self.sim_R.executable.compute_totals('R',nu) 
+            jacobians_F = self.sim_F.executable.compute_totals('F',nu)
+            final_grad = range(len(nu))
             
-            jacobians_F = self.sim_F.executable.compute_totals('F',['c','m','k']) 
-            dFdk = jacobians_F['F','k']
-            dfdk = dfdk + dFdk + np.dot(adj,dRdk)
-        return dfdk
+            for i in range(len(nu)):
+                dRdnu = jacobians_R['R',nu[i]]
+                dFdnu = jacobians_F['F',nu[i]]
+                final_grad[i] = final_grad[i] + dFdnu + np.dot(adj,dRdnu)
+        return final_grad

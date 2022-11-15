@@ -22,6 +22,7 @@ t_initial = 0
 t_final = 10
 time_step = 10**(-3)
 tolerance = 10**(-8)
+mu = ['c','m','k']
 
 import timeit
 start = timeit.default_timer()
@@ -45,7 +46,8 @@ plt.show()
 plt.plot(experiment.time,smd_adj.adj_hist[:,1])
 plt.show()
 
-dfdk = smd_adj.final_dfdk()
+grad = smd_adj.final_grad()
+dfdk = grad[2]
 fd_adjoint = 1.160820
 print(dfdk)
 print(100*(dfdk-fd_adjoint)/dfdk)
