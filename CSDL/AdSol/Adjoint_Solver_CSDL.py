@@ -9,7 +9,7 @@ import numpy as np
 from csdl_om import Simulator
 
 class Adjoint:
-    def __init__(self,Model_R,Model_F,time,x_hist,xDot_hist):
+    def __init__(self,Model_R,Model_F,time,x_hist,xDot_hist,mu):
         self.time = time
         self.time_step = time[1]-time[0]
         self.x_hist = x_hist
@@ -17,6 +17,7 @@ class Adjoint:
         self.adj_hist = np.zeros(self.x_hist.shape)
         self.dRdxDot_adj_hist = np.zeros(self.x_hist.shape)
         self.dFdxDot_hist = np.zeros(self.x_hist.shape)
+        self.mu = mu
 
         self.sim_R = Simulator(Model_R)
         self.sim_F = Simulator(Model_F)
@@ -67,31 +68,12 @@ class Adjoint:
                 self.adj_hist[t,col] = adj[col]
                 dRdxDot_adj = np.matmul(dRdxDot.T,adj)
                 self.dRdxDot_adj_hist[t,col] = dRdxDot_adj[col]
-                # print(type(dFdxDot))
                 self.dFdxDot_hist[t,col] = dFdxDot[0,col]
 
-    # def final_dfdk(self):
-    #     dfdk = 0
-    #     for t in range(len(self.time)-1):
-    #         self.sim_R['x'] = self.x_hist[t,:]
-    #         self.sim_R['xDot'] = self.xDot_hist[t,:]
-    #         self.sim_R.run()
-    #         self.sim_F['x'] = self.x_hist[t,:]
-    #         self.sim_F['xDot'] = self.xDot_hist[t,:]
-    #         self.sim_F.run()
-
-    #         adj = self.adj_hist[t,:]
-    #         jacobians_R = self.sim_R.executable.compute_totals('R',['c','m','k']) 
-    #         dRdk = jacobians_R['R','k']
-            
-    #         jacobians_F = self.sim_F.executable.compute_totals('F',['c','m','k']) 
-    #         dFdk = jacobians_F['F','k']
-    #         dfdk = dfdk + dFdk + np.dot(adj,dRdk)
-    #     return dfdk
-    
     # nu should be in the form of list
-    def final_grad(self,nu):
-        dfdk = 0
+    def final_grad(self):
+        mu = self.mu
+        final_grad = np.zeros(len(mu))
         for t in range(len(self.time)-1):
             self.sim_R['x'] = self.x_hist[t,:]
             self.sim_R['xDot'] = self.xDot_hist[t,:]
@@ -101,12 +83,11 @@ class Adjoint:
             self.sim_F.run()
 
             adj = self.adj_hist[t,:]
-            jacobians_R = self.sim_R.executable.compute_totals('R',nu) 
-            jacobians_F = self.sim_F.executable.compute_totals('F',nu)
-            final_grad = range(len(nu))
-            
-            for i in range(len(nu)):
-                dRdnu = jacobians_R['R',nu[i]]
-                dFdnu = jacobians_F['F',nu[i]]
-                final_grad[i] = final_grad[i] + dFdnu + np.dot(adj,dRdnu)
+            jacobians_R = self.sim_R.executable.compute_totals('R',mu) 
+            jacobians_F = self.sim_F.executable.compute_totals('F',mu)
+
+            for i in range(len(mu)):
+                dRdmu = jacobians_R['R',mu[i]]
+                dFdmu = jacobians_F['F',mu[i]]
+                final_grad[i] = final_grad[i] + dFdmu + np.dot(adj,dRdmu)
         return final_grad

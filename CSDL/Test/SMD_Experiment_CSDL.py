@@ -39,12 +39,7 @@ plt.ylabel('position (m)')
 plt.grid(True)
 plt.show()
 
-smd_adj = Adjoint(sim_R,sim_F,experiment.time,experiment.x_hist,experiment.xDot_hist)
-plt.plot(experiment.time,smd_adj.adj_hist[:,0])
-plt.show()
-
-plt.plot(experiment.time,smd_adj.adj_hist[:,1])
-plt.show()
+smd_adj = Adjoint(sim_R,sim_F,experiment.time,experiment.x_hist,experiment.xDot_hist,mu)
 
 grad = smd_adj.final_grad()
 dfdk = grad[2]
