@@ -2,7 +2,7 @@
 """
 Created on Thu Jul 28 03:52:08 2022
 
-@author: Vera_
+@author: Zeyu Huanf
 """
 
 from csdl import Model
@@ -54,29 +54,3 @@ class SMD_F(Model):
         F = 1/2*time_step*k*x[0]**2
         self.register_output('F',F)
 
-# from csdl_om import Simulator
-
-# class SMD:
-#     def __init__(self):
-#         sim_R = Simulator(SMD_R())
-#         sim_R['x'] = np.array([1,0])
-#         sim_R['xDot'] = np.array([0,0])
-#         sim_R.run()
-        
-#         self.jacobians_R = sim_R.executable.compute_totals('R',['x','xDot'])
-#         self.dRdx = self.jacobians_R['R','x']
-#         self.dRdxDot = self.jacobians_R['R','xDot']
-#         self.R = sim_R['R']
-#         self.x = sim_R['x']
-#         self.xDot = sim_R['xDot']
-        # self.x0 = sim_R['x0']
-        # self.xDot0 = sim_R['xDot0']
-        
-        # sim_F = Simulator(SMD_F())
-        # # sim_F['x']=0
-        # sim_F.run()
-        
-        # self.jacobians_F = sim_F.executable.compute_totals('F',['k','m','c','x','xDot'])
-        # self.dFdx = self.jacobians_F['F','x']
-        # self.dFdxDot = self.jacobians_F['F','xDot']
-        # self.time_step = sim_F['time_step']
