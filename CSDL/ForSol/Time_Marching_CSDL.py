@@ -9,7 +9,7 @@ import numpy as np
 from csdl_om import Simulator
 
 class Newton:
-    def __init__(self,Model_R,x0,xDot0,t_initial,t_final,time_step,tolerance): #sim_R
+    def __init__(self,sim_R,x0,xDot0,t_initial,t_final,time_step,tolerance): #sim_R
         self.time_step = time_step
         self.time = np.arange(t_initial,t_final+time_step,time_step)
         self.x0 = x0
@@ -18,7 +18,7 @@ class Newton:
         self.x_hist = np.concatenate((self.x0,np.zeros((len(self.time)-1,(self.x0).size))),axis=0)
         self.xDot_hist = np.concatenate((self.xDot0,np.zeros((len(self.time)-1,(self.x0).size))),axis=0)
         
-        sim_R = Simulator(Model_R)
+       # sim_R = Simulator(Model_R)
         sim_R['x'] = self.x0
         sim_R['xDot'] = self.xDot0
         sim_R.run()

@@ -36,19 +36,28 @@ class RLC_R(Model):
 
 class RLC_F(Model):
     def initialize(self):
-        self.parameters.declare('time_step',default=10**(-3),types=(int,float)) 
-        self.parameters.declare('l',default=1,types=(int,float))
+        self.parameters.declare('time_step',default=10**(-3),types=(int,float))
+
+        self.parameters.declare('RE', default=1.1, types=(float))
+        self.parameters.declare('L', default=1.6, types=(float))
+        self.parameters.declare('C', default=0.8, types=(float))
+        self.parameters.declare('V', default=2.4, types=(float))
 
     def define(self):      
-        x = self.create_input('x', shape=(2,))
-        xDot = self.create_input('xDot', shape=(2,))
-        
+        x = self.create_input('x', shape=(4,))
+        xDot = self.create_input('xDot', shape=(4,))
+
         time_step = self.parameters['time_step']
+
+        RE = self.create_input('RE',val=self.parameters['RE'])
+        L = self.create_input('L',val=self.parameters['L'])
+        C = self.create_input('C',val=self.parameters['C'])
+        V = self.create_input('V',val=self.parameters['V'])
+        self.add_design_variable('RE')
+        self.add_design_variable('L')
+        self.add_design_variable('C')
+        self.add_design_variable('V')
         
-        l = self.create_input('l',val=self.parameters['l'])
-        
-        self.add_design_variable('l')
-        
-        F = 1/2*time_step*l*x[0]**2
+        F = time_step*V*x[0]
         self.register_output('F',F)
 

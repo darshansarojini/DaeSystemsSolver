@@ -55,6 +55,6 @@ class PEND_F(Model):
         self.add_design_variable('b')
         self.add_design_variable('m')
         
-        F = 1/2*m*(x[1]*l)**2
+        F = 1/2*time_step*m*(x[1]*l)**2
         self.register_output('F',F)
 

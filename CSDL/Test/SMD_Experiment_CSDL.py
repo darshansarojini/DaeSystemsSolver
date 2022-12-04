@@ -33,17 +33,16 @@ experiment = Newton(sim_R,x0,xDot0,t_initial,t_final,time_step,tolerance)
 stop = timeit.default_timer()
 print('Time: ', stop - start) 
 
-plt.plot(experiment.time,experiment.x_hist[:,0])
-plt.title('Mass Movement')
-plt.xlabel('time (s)')
-plt.ylabel('position (m)')
+plt.plot(experiment.time,experiment.x_hist[:,0],'k-',linewidth=2)
+plt.xlabel('Time (s)')
+plt.ylabel('Displacement (m)')
 plt.grid(True)
 plt.show()
 
-smd_adj = Adjoint(model_R,model_F,experiment.time,experiment.x_hist,experiment.xDot_hist,mu)
+#smd_adj = Adjoint(model_R,model_F,experiment.time,experiment.x_hist,experiment.xDot_hist,mu)
 
-grad = smd_adj.final_grad()
-dfdk = grad[2]
-fd_adjoint = 1.160820
-print(dfdk)
-print(100*(dfdk-fd_adjoint)/dfdk)
+#grad = smd_adj.final_grad()
+#dfdk = grad[2]
+#fd_adjoint = 1.160820
+#print(dfdk)
+#print(100*(dfdk-fd_adjoint)/dfdk)
