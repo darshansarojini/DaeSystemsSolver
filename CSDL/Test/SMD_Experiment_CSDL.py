@@ -15,6 +15,7 @@ from csdl_om import Simulator
 import numpy as np
 import matplotlib.pyplot as plt
 
+# experiment initialization
 model_R = SMD_R()
 model_F = SMD_F()
 x0 = np.array([[1,0]])
@@ -25,24 +26,49 @@ time_step = 10**(-3)
 tolerance = 10**(-8)
 mu = ['c','m','k']
 
-import timeit
-start = timeit.default_timer()
+# solve state variables implementing forward solver
 sim_R = Simulator(model_R) 
 experiment = Newton(sim_R,x0,xDot0,t_initial,t_final,time_step,tolerance)
 
-stop = timeit.default_timer()
-print('Time: ', stop - start) 
-
+# plot the results
 plt.plot(experiment.time,experiment.x_hist[:,0],'k-',linewidth=2)
 plt.xlabel('Time (s)')
 plt.ylabel('Displacement (m)')
 plt.grid(True)
 plt.show()
 
-#smd_adj = Adjoint(model_R,model_F,experiment.time,experiment.x_hist,experiment.xDot_hist,mu)
+"""
+compute gradients using adjoint method
+"""
+smd_adj = Adjoint(model_R,model_F,experiment.time,experiment.x_hist,experiment.xDot_hist,mu)
+grad = smd_adj.final_grad()
 
-#grad = smd_adj.final_grad()
-#dfdk = grad[2]
-#fd_adjoint = 1.160820
-#print(dfdk)
-#print(100*(dfdk-fd_adjoint)/dfdk)
+"""
+compute gradients using finite element method
+"""
+k = 5.0
+# initial condition
+val = 0
+for i in range(len(experiment.time)):
+    xsq = experiment.x_hist[i,0]*experiment.x_hist[i,0]
+    val = val + 0.5*k*experiment.time_step*xsq
+
+# modify and update design variables
+k = 5.0 + 10**(-4)
+sim_R = Simulator(model_R)
+sim_R['k'] = k
+sim_R.run()
+
+# update solution of modified DAE system
+experiment = Newton(sim_R,x0,xDot0,t_initial,t_final,time_step,tolerance)
+val_plus = 0
+for i in range(len(experiment.time)):
+    xsq = experiment.x_hist[i,0]*experiment.x_hist[i,0]
+    val_plus = val_plus + 0.5*k*experiment.time_step*xsq
+
+"""
+compare results
+"""
+fd_adjoint = (val_plus-val)/10**(-4)
+dfdk = grad[2]
+print(fd_adjoint)
