@@ -11,7 +11,7 @@ on CSDL framework.
 """
 
 import numpy as np
-from csdl_om import Simulator
+from python_csdl_backend import Simulator
 
 class Adjoint:
     """
@@ -53,11 +53,11 @@ class Adjoint:
             self.sim_F.run()
             
             # compute jacobian matrices
-            jacobians_R = self.sim_R.executable.compute_totals('R',['x','xDot']) 
+            jacobians_R = self.sim_R.compute_totals('R',['x','xDot']) 
             dRdx = jacobians_R['R','x']
             dRdxDot = jacobians_R['R','xDot']
             
-            jacobians_F = self.sim_F.executable.compute_totals('F',['x','xDot'])
+            jacobians_F = self.sim_F.compute_totals('F',['x','xDot'])
             dFdx = jacobians_F['F','x']
             dFdxDot = jacobians_F['F','xDot']
             
@@ -117,8 +117,8 @@ class Adjoint:
 
             adj = self.adj_hist[t,:]
             # compute Jacobian matrices with respect to design variables
-            jacobians_R = self.sim_R.executable.compute_totals('R',mu) 
-            jacobians_F = self.sim_F.executable.compute_totals('F',mu)
+            jacobians_R = self.sim_R.compute_totals('R',mu) 
+            jacobians_F = self.sim_F.compute_totals('F',mu)
             
             # compute final gradient
             for i in range(len(mu)):

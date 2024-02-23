@@ -70,7 +70,7 @@ class Newton:
                     break
                 
                 # compute x
-                jacobians_R = sim_R.executable.compute_totals('R',['x','xDot'])
+                jacobians_R = sim_R.compute_totals('R',['x','xDot'])
                 dRdx = jacobians_R['R','x']
                 dRdxDot = jacobians_R['R','xDot']
                 delta_x = np.linalg.solve(dRdx+k0*dRdxDot,-R)
@@ -81,5 +81,5 @@ class Newton:
             
             # record results
             for col in range((self.x0).size):
-                self.x_hist[t+1,col] = x[col]
+                self.x_hist[t+1,col] = sim_R['x'][col]
                 self.xDot_hist[t+1,col] = xDot[col]

@@ -10,7 +10,7 @@ sys.path.append('..')
 from Model.SMD_Model_CSDL import SMD_R,SMD_F
 from ForSol.Time_Marching_CSDL import Newton
 from AdSol.Adjoint_Solver_CSDL import Adjoint
-from csdl_om import Simulator
+from python_csdl_backend import Simulator
 
 import numpy as np
 import matplotlib.pyplot as plt
