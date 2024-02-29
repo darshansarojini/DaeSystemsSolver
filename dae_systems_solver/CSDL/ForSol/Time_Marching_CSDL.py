@@ -47,10 +47,10 @@ class Newton:
         # time marching
         for t in range(len(self.time)-1):    
             steps = 0
-            x = sim_R['x']
+            x = self.x_hist[t,:]
             
             # Newton's method
-            while steps < 100:
+            while steps < 10:
                 # compute xDot
                 if t == 0:
                     k0 = 1/self.time_step
@@ -61,6 +61,7 @@ class Newton:
                     k1 = -2/self.time_step
                     k2 = 0.5/self.time_step
                     xDot = k0*x+k1*self.x_hist[t,:]+k2*self.x_hist[t-1,:]
+                sim_R['x'] = x
                 sim_R['xDot'] = xDot
                 sim_R.run()
                 
@@ -74,12 +75,13 @@ class Newton:
                 dRdx = jacobians_R['R','x']
                 dRdxDot = jacobians_R['R','xDot']
                 delta_x = np.linalg.solve(dRdx+k0*dRdxDot,-R)
-                sim_R['x'] = x + delta_x
-                sim_R.run()
+                x = x + delta_x
+                # sim_R['x'] = x + delta_x
+                # sim_R.run()
                 
                 steps += 1
             
             # record results
             for col in range((self.x0).size):
-                self.x_hist[t+1,col] = sim_R['x'][col]
+                self.x_hist[t+1,col] = x[col]
                 self.xDot_hist[t+1,col] = xDot[col]
